@@ -1,0 +1,9 @@
+.idea
+.env
+logs/*
+.DS_Store
+nginx/sites/site.conf
+html/wp-snapshots/
+html/.well-known/
+html/questions.txt
+letsencrypt/

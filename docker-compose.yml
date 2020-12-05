@@ -1,0 +1,106 @@
+version: '3'
+
+services:
+
+  ### MySQL Container #######################################
+
+  wp_mysql:
+    image: mysql:8.0
+    container_name: wp_mysql
+    restart: unless-stopped
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+    volumes:
+      - dbdata:/var/lib/mysql:cached
+    ports:
+      - "3306:3306"
+    command: '--default-authentication-plugin=mysql_native_password'
+    networks:
+      - backend
+
+  ### PHP-FPM Container #######################################
+
+  wp_php-fpm:
+    depends_on:
+      - wp_mysql
+    container_name: wp_php-fpm
+    restart: unless-stopped
+    build:
+      context: php-fpm
+      args:
+        - PUID=${USER_PUID}
+        - INSTALL_XDEBUG=${PHP_FPM_INSTALL_XDEBUG}
+        - INSTALL_MEMCACHED=${PHP_FPM_INSTALL_MEMCACHED}
+        - INSTALL_OPCACHE=${PHP_FPM_INSTALL_OPCACHE}
+        - INSTALL_IMAGEMAGICK=${INSTALL_IMAGEMAGICK}
+        - INSTALL_IMAGE_OPTIMIZERS=${PHP_FPM_INSTALL_IMAGE_OPTIMIZERS}
+        - BASE_IMAGE_TAG_PREFIX=${PHP_FPM_BASE_IMAGE_TAG_PREFIX}
+        - LARADOCK_PHP_VERSION=${PHP_VERSION}
+    volumes:
+      - ./html:/var/www/html:delegated
+      - ./php-fpm/php.ini:/usr/local/etc/php/php.ini:delegated
+    expose:
+      - "9000"
+    dns:
+      - 8.8.4.4
+      - 8.8.8.8
+    extra_hosts:
+      - "dockerhost:${DOCKER_HOST_IP}"
+    networks:
+      - backend
+
+  ### phpMyAdmin Container ###################################
+
+  wp_phpmyadmin:
+    build: ./phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+      - MYSQL_USER=${PMA_USER}
+      - MYSQL_PASSWORD=${PMA_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${PMA_ROOT_PASSWORD}
+    ports:
+      - "${PMA_PORT}:80"
+    depends_on:
+      - "${PMA_DB_ENGINE}"
+    networks:
+      - frontend
+      - backend
+
+  ### Nginx Server Container ##################################
+
+  wp_nginx:
+    depends_on:
+      - wp_php-fpm
+    container_name: wp_nginx
+    restart: unless-stopped
+    build:
+      context: nginx
+      args:
+        - PUID=${USER_PUID}
+        - PHP_UPSTREAM=wp_php-fpm
+    volumes:
+      - ./:/var/www/:delegated
+      - ${NGINX_HOST_LOG_PATH}:/var/log/nginx:cached
+      - ${NGINX_SITES_PATH}:/etc/nginx/sites-available:delegated
+    ports:
+      - "${NGINX_HOST_HTTP_PORT}:80"
+      - "${NGINX_HOST_HTTPS_PORT}:443"
+      - "${NGINX_HOST_TSL_PORT}:587"
+      - "${NGINX_HOST_MAIL_PORT}:25"
+    networks:
+      - frontend
+      - backend
+
+### Networks Setup ############################################
+
+volumes:
+  dbdata:
+
+networks:
+  frontend:
+    driver: "bridge"
+  backend:
+    driver: "bridge"
