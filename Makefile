@@ -8,8 +8,10 @@ wp-install:
 	tar zxf latest.tar.gz
 	mv wordpress html
 	rm latest.tar.gz
+	chmod -R 777 html/.git
+	rm -rf html/.git
 create-project:
-	cp .env-example .env
+	# cp .env-example .env
 	cp nginx/sites/site.conf.example-dev nginx/sites/site.conf
 	@make wp-install
 	@make build
