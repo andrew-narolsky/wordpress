@@ -14,7 +14,7 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
     volumes:
-      - dbdata:/var/lib/mysql:cached
+      - ./dbdata:/var/lib/mysql:cached
     ports:
       - "3306:3306"
     command: '--default-authentication-plugin=mysql_native_password'
