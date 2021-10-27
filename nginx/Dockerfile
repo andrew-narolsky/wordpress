@@ -1,4 +1,4 @@
-FROM nginx:alpine-perl
+FROM nginx:stable-alpine-perl
 
 LABEL maintainer="Mahmoud Zalt <mahmoud@zalt.me>"
 
@@ -37,6 +37,6 @@ RUN echo "upstream php-upstream { server ${PHP_UPSTREAM_CONTAINER}:${PHP_UPSTREA
 
 ADD startup.sh /opt/startup.sh
 RUN sed -i 's/\r//g' /opt/startup.sh
-CMD ["/bin/bash", "/opt/startup.sh"]
+CMD crond -l 2 -b && nginx
 
 EXPOSE 80 443
