@@ -119,7 +119,7 @@ git config --global alias.up '!git remote update -p; git merge --ff-only @{u}'
 
 2. Clone repository
 ```
-git clone https://github.com/andrew-narolsky/wordpress-docker.git
+https://github.com/andrew-narolsky/wordpress.git
 ```
 
 ### Configure wordpress and docker
