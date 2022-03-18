@@ -1,28 +1,5 @@
 # WordPress
 
-## Installation (development)
-
-1. Clone repository
-```
-git clone https://github.com/andrew-narolsky/wordpress-docker.git
-```
-
-2. Create project
-```
-make create-project
-```
-3. Install recommend plugins
-```
-    a. Advanced custom fields (ACF)
-    b. ACF gallery (addon)
-    c. ACF options page (addon)
-    d. ACF repeater (addon)
-    e. Classic editor
-```
-```
-make install-recommend-plugins
-```
- 
 ## Installation (production)
 
 ### Create non-root User
@@ -61,7 +38,7 @@ export LC_ALL="en_US.UTF-8"
 export LC_CTYPE="en_US.UTF-8"
 ```
 
-### Add swap file ([source](https://www.digitalocean.com/community/tutorials/how-to-add-swap-on-ubuntu-14-04))
+### Add swap file
 
 1. Create a 4 Gigabyte file, enabling the swap file, set up the swap space
 ```
@@ -92,7 +69,7 @@ vm.swappiness=10
 vm.vfs_cache_pressure = 50
 ```
 
-### Install Docker and Docker-compose ([source](https://www.digitalocean.com/community/tutorials/docker-ubuntu-16-04-ru))
+### Install Docker and Docker-compose
 
 1. Update packages database
 ```
@@ -142,7 +119,7 @@ git config --global alias.up '!git remote update -p; git merge --ff-only @{u}'
 
 2. Clone repository
 ```
-git clone https://github.com/NetFix-Rivne/wordpress.git
+git clone https://github.com/andrew-narolsky/wordpress-docker.git
 ```
 
 ### Configure wordpress and docker
@@ -158,12 +135,17 @@ cp .env-example .env
 cp nginx/sites/site.conf.example-dev nginx/sites/site.conf
 ```
 
-3. Start docker containers
+3. Download wp
 ```
-docker-compose up -d
+make wp-install
 ```
 
-4. Add executing of containers and the startup
+4. Start docker containers
+```
+make build
+```
+
+5. Add executing of containers and the startup
 ```
 sudo crontab -e
 ---
@@ -171,9 +153,9 @@ sudo crontab -e
 @reboot cd /home/wp/wordpress/ && /usr/local/bin/docker-compose up -d
 ```
 
-5. Go to the site and install WordPress
+6. Go to the site and install WordPress
 
-### Configure SSL from Let's Encrypt ([source](https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-14-04))
+### Configure SSL from Let's Encrypt
 
 1. Install Let's Encrypt Client
 ```
