@@ -113,13 +113,13 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 1. Init git settings
 ```
-git config --global user.name "xpert13"
+git config --global user.name "andrew-narolsky"
 git config --global alias.up '!git remote update -p; git merge --ff-only @{u}'
 ```
 
 2. Clone repository
 ```
-https://github.com/andrew-narolsky/wordpress.git
+git clone https://github.com/andrew-narolsky/wordpress.git
 ```
 
 ### Configure wordpress and docker
@@ -135,17 +135,22 @@ cp .env-example .env
 cp nginx/sites/site.conf.example-dev nginx/sites/site.conf
 ```
 
-3. Download wp
+3. Install make
+```
+sudo apt install make
+```
+
+4. Download wp
 ```
 make wp-install
 ```
 
-4. Start docker containers
+5. Start docker containers
 ```
 make build
 ```
 
-5. Add executing of containers and the startup
+6. Add executing of containers and the startup
 ```
 sudo crontab -e
 ---
@@ -153,7 +158,7 @@ sudo crontab -e
 @reboot cd /home/wp/wordpress/ && /usr/local/bin/docker-compose up -d
 ```
 
-6. Go to the site and install WordPress
+7. Go to the site and install WordPress
 
 ### Configure SSL from Let's Encrypt
 
