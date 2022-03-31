@@ -115,6 +115,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 ```
 git config --global user.name "andrew-narolsky"
 git config --global alias.up '!git remote update -p; git merge --ff-only @{u}'
+git config --global credential.helper store
 ```
 
 2. Clone repository
@@ -150,26 +151,12 @@ make wp-install
 make build
 ```
 
-6. Add executing of containers and the startup
-```
-sudo crontab -e
----
-# Start docker-compose at boot
-@reboot cd /home/wp/wordpress/ && /usr/local/bin/docker-compose up -d
-```
-
-7. Go to the site and install WordPress
+6. Go to the site and install WordPress
 
 ### Configure SSL from Let's Encrypt
 
 1. Install Let's Encrypt Client
 ```
-# Ubuntu 18.04
-sudo apt-get update && sudo apt-get install software-properties-common
-sudo add-apt-repository universe && sudo add-apt-repository ppa:certbot/certbot
-sudo apt-get update && sudo apt-get install certbot python-certbot-nginx
-
-# Ubuntu 20.04
 sudo apt-get install letsencrypt
 ```
 2. Get SSL certificates (change example.com to current domain)
@@ -205,7 +192,7 @@ docker-compose restart wp_nginx
 
 7. Set up auto renewal (change EXAMPLE.com to current domain)
 ```
-sudo crontab -e
+sudo nano crontab -e
 ---
 # Copy certificate files to local directory
 49 2 * * 1 cp /etc/letsencrypt/live/EXAMPLE.com/fullchain.pem /home/wp/wordpress/letsencrypt/fullchain.pem
