@@ -201,3 +201,18 @@ sudo nano crontab -e
 # Restart nginx
 50 2 * * 1 cd /home/wp/wordpress/ && /usr/local/bin/docker-compose restart wp_nginx
 ```
+## Server health checker
+
+1. Install telegraf
+
+```
+chmod +x install-telegraf.sh
+sudo ./install-telegraf.sh
+```
+
+2. Add telegraf user to the docker group, restart telegraf service and check status
+```
+sudo usermod -a -G docker telegraf
+sudo service telegraf restart
+sudo service telegraf status
+```
