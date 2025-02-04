@@ -106,6 +106,22 @@ RUN if [ ${INSTALL_IMAGE_OPTIMIZERS} = true ]; then \
 ;fi
 
 ###########################################################################
+
+USER root
+
+ARG INSTALL_GMP=false
+ARG PHP_VERSION=${LARADOCK_PHP_VERSION}
+
+RUN set -eux; \
+    ###########################################################################
+    # GMP (GNU Multiple Precision):
+    ###########################################################################
+    if [ "${INSTALL_GMP}" = "true" ]; then \
+      apt-get update && apt-get install -y libgmp-dev; \
+      docker-php-ext-install gmp; \
+    fi
+
+###########################################################################
 # ImageMagick:
 ###########################################################################
 
